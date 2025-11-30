@@ -1,0 +1,171 @@
+.contenedor-reproductor {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+}
+
+.reproductor {
+    width: 800px;
+    height: 450px;
+    background: #000;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #e0e0e0;
+    background: #1a1a1a;
+    
+    padding-top: 120px;
+}/* Header fijo */
+header {
+    background: linear-gradient(135deg, #1a1a1a 0%, #e63946 100%);
+    color: white;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    transition: transform 0.3s ease;
+}
+
+
+/* CONTENEDOR PRINCIPAL DEL HEADER */
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 20px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    height: 90px;
+}
+
+header.hidden {
+    transform: translateY(-100%);
+}
+
+
+/* LOGO A LA IZQUIERDA */
+.logo-box img {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+/* CAJA DERECHA (titulo + nav) */
+.right-box {
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;   /* Centra vertical */
+    align-items: center;       /* Centra horizontal */
+
+    height: 100%;              /* ESTO ERA LO QUE FALTABA */
+    flex-grow: 1;              /* Deja que esta zona ocupe espacio */
+}
+
+/* Título */
+.right-box h1 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+/* NAV centrado */
+.right-box nav {
+    display: flex;
+    gap: 35px;
+    align-items: center;
+    justify-content: center;
+}
+
+/* LINKS */
+.right-box nav a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 10px;
+    position: relative;
+}
+
+/* Barra inferior */
+.right-box nav a::after {
+    content: "";
+    width: 0%;
+    height: 3px;
+    background: #e63946;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transition: width .3s ease;
+}
+
+.right-box nav a:hover::after,
+.right-box nav a.active::after {
+    width: 100%;
+}
+
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+section {
+    margin-bottom: 60px;
+    padding: 40px;
+    background: #2a2a2a;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+section h2 {
+    color: #e63946;
+    margin-bottom: 20px;
+    font-size: 2em;
+    text-align: center;
+}
+
+footer {
+    background: #000;
+    color: white;
+    padding: 30px 0;
+    text-align: center;
+}
+
+.social-media a {
+    color: white;
+    font-size: 24px;
+    margin: 0 15px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.social-media a:hover {
+    color: #e63946;
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.8em;
+    }
+
+    nav a {
+        display: block;
+        margin: 5px 0;
+    }
+
+    section {
+        padding: 20px;
+    }
+}
