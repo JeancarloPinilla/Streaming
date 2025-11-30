@@ -30,3 +30,45 @@ links.forEach(link => {
 window.addEventListener("beforeunload", () => {
     document.body.style.opacity = "0";
 });
+
+
+
+
+// Animación y cierre inteligente del menú móvil
+const menuBtn = document.getElementById("menuBtn");
+const mobileMenu = document.getElementById("mobileMenu");
+
+function toggleMenu() {
+mobileMenu.classList.toggle("active");
+menuBtn.classList.toggle("open");
+}
+
+// Abrir/cerrar menú al tocar el botón
+menuBtn.addEventListener("click", (event) => {
+event.stopPropagation();
+toggleMenu();
+});
+
+// Cerrar menú al tocar un enlace
+mobileMenu.querySelectorAll("a").forEach(link => {
+link.addEventListener("click", () => {
+mobileMenu.classList.remove("active");
+menuBtn.classList.remove("open");
+});
+});
+
+// Cerrar menú al tocar fuera
+document.addEventListener("click", (event) => {
+if (!mobileMenu.contains(event.target) && !menuBtn.contains(event.target)) {
+mobileMenu.classList.remove("active");
+menuBtn.classList.remove("open");
+}
+});
+
+function touchOutside(e) {
+if (!mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+mobileMenu.classList.remove("active");
+menuBtn.classList.remove("open");
+}
+}
+document.addEventListener("touchstart", touchOutside);
