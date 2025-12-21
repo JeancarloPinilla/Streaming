@@ -665,6 +665,11 @@ function closeModal(button) {
 
 
 function showGameOver() {
+
+    const mobileControls = document.getElementById("mobileControls");
+    if (mobileControls) mobileControls.style.display = "none";
+
+
     const gameOverDiv = document.createElement('div');
     gameOverDiv.className = 'game-over-panel';
     gameOverDiv.innerHTML = `
@@ -680,6 +685,10 @@ function showGameOver() {
 
 function showGameWon() {
     audioManager.playVictorySound();
+
+    const mobileControls = document.getElementById("mobileControls");
+    if (mobileControls) mobileControls.style.display = "none";
+
     
     const gameWonDiv = document.createElement('div');
     gameWonDiv.className = 'game-over-panel';
@@ -715,6 +724,9 @@ function startGame() {
             pero cuidado con los enemigos. ¡Buena suerte!
         </div>
     `;
+
+    const mobileControls = document.getElementById("mobileControls");
+    if (mobileControls) mobileControls.style.display = "block";
 }
 
 function togglePause() {
@@ -781,6 +793,9 @@ function restartGame() {
     `;
     
     updateUI();
+
+    const mobileControls = document.getElementById("mobileControls");
+    if (mobileControls) mobileControls.style.display = "block";
 }
 
 // Inicializar juego 

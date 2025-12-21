@@ -323,7 +323,11 @@ body {
 /* ====================================================== */
 @media (hover: none) and (pointer: coarse) {
     .mobile-controls {
-        display: block;
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 999;
+        display: none; /* 👈 oculto por defecto */
     }
 }
 
@@ -334,5 +338,11 @@ body {
 
     .game-container {
         padding: 15px;
+    }
+}
+
+@media (min-width: 768px) {
+    .mobile-controls {
+        display: none !important;
     }
 }
