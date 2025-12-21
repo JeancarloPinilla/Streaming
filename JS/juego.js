@@ -704,6 +704,7 @@ function showGameWon() {
 }
 
 function startGame() {
+
     gameState.gameStarted = true;
     gameState.gamePaused = false;
     
@@ -726,10 +727,21 @@ function startGame() {
     `;
 
     const mobileControls = document.getElementById("mobileControls");
-    if (mobileControls) mobileControls.style.display = "block";
+    if (mobileControls && window.innerWidth <= 768) {
+        mobileControls.style.display = "block";
+    }
+
+
 }
 
 function togglePause() {
+    const mobileControls = document.getElementById("mobileControls");
+
+    if (mobileControls) {
+        mobileControls.style.display = gameState.gamePaused ? "none" : "block";
+    }
+
+
     if (!gameState.gameStarted) return;
     
     gameState.gamePaused = !gameState.gamePaused;
