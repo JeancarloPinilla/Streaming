@@ -287,12 +287,11 @@ body {
     display: none;
     position: fixed;
     bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 20px;
+    z-index: 999;
     background: rgba(0,0,0,0.85);
     padding: 15px;
     border-radius: 20px;
-    z-index: 1000;
 }
 
 .joystick-base {
@@ -327,9 +326,10 @@ body {
         bottom: 20px;
         left: 20px;
         z-index: 999;
-        display: none; /* 👈 oculto por defecto */
+        display: none;
     }
 }
+
 
 @media (max-width: 768px) {
     body {
@@ -341,8 +341,3 @@ body {
     }
 }
 
-@media (min-width: 768px) {
-    .mobile-controls {
-        display: none !important;
-    }
-}
