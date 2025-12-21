@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../styles/juego.css">
 </head>
 <body>
-    <a href="../main.html" class="back-button">← Regresar al panel</a>
+    <a href="../index.html" class="back-button">← Regresar al panel</a>
     <div class="game-container">
         <div class="game-header">
             <h1>🏴‍☠️ Cazador de Tesoros</h1>
@@ -58,15 +58,13 @@
         </div>
     </div>
 
-    <!-- Controles móviles -->
+    <!-- Controles móviles: Joystick -->
     <div class="mobile-controls" id="mobileControls">
-        <div class="mobile-dpad">
-            <div class="mobile-btn up" data-key="ArrowUp">↑</div>
-            <div class="mobile-btn left" data-key="ArrowLeft">←</div>
-            <div class="mobile-btn right" data-key="ArrowRight">→</div>
-            <div class="mobile-btn down" data-key="ArrowDown">↓</div>
+        <div class="joystick-base" id="joystickBase">
+            <div class="joystick-stick" id="joystickStick"></div>
         </div>
     </div>
+
 
     <div class="message-panel" id="messagePanel">
         <div class="message-title">¡Bienvenido Aventurero!</div>
@@ -79,6 +77,7 @@
 
     <!-- Panel de inicio -->
     <div class="start-panel" id="startPanel">
+        <button class="close-modal" onclick="closeModal(this)">✕</button>
         <div class="start-title">🏴‍☠️ Cazador de Tesoros</div>
         <div class="start-message">
             ¡Embárcate en una aventura épica en busca del tesoro perdido!<br><br>
