@@ -1,27 +1,27 @@
-const derechos = [
-    "Conocer todos los trámites administrativos",
-    "Ser informado de todo lo relacionado con su atención",
-    "Recibir atención que salvaguarde su dignidad personal y respete sus valores",
-    "Respetar su privacidad y confidencialidad",
-    "Recibir un trato amable y humano",
-    "Conocer toda la información sobre su enfermedad",
-    "Ser atendido por personal capacitado",
-    "Recibir prescripción de medicamentos",
-    "Aceptar o rechazar procedimientos con constancia escrita",
-    "Recibir atención requerida según necesidades"
+const tesorosOro = [
+    "¡Moneda de oro antigua! Vale una fortuna",
+    "¡Doblón español del siglo XVII!",
+    "¡Oro puro de las minas perdidas!",
+    "¡Moneda del tesoro del Capitán Barbanegra!",
+    "¡Pieza de ocho reluciente!",
+    "¡Oro del galeón hundido!",
+    "¡Moneda real de la corona!",
+    "¡Tesoro de la isla misteriosa!",
+    "¡Oro del cofre legendario!",
+    "¡Riqueza de los siete mares!"
 ];
 
-const deberes = [
-    "Mantener el buen orden y aseo en la institución",
-    "Cumplir las normas y actuar de buena fe",
-    "Exponer claramente su estado de salud",
-    "Seguir las recomendaciones médicas",
-    "No solicitar servicios con información engañosa",
-    "Expresar información veraz para un buen servicio",
-    "Informar sobre actos que afecten la clínica",
-    "Cumplir citas y requerimientos del personal",
-    "Respetar al personal y a otros usuarios",
-    "Brindar un trato amable y digno"
+const tesorosGemas = [
+    "¡Rubí brillante del tamaño de un huevo!",
+    "¡Esmeralda de la selva perdida!",
+    "¡Diamante azul rarísimo!",
+    "¡Zafiro del océano profundo!",
+    "¡Perla negra legendaria!",
+    "¡Amatista de la cueva secreta!",
+    "¡Topacio dorado resplandeciente!",
+    "¡Ópalo místico cambiante!",
+    "¡Jade imperial precioso!",
+    "¡Cristal de poder antiguo!"
 ];
 
 const canvas = document.getElementById('gameCanvas');
@@ -36,12 +36,12 @@ function getResponsiveSizes() {
     
     if (isSmallMobile) {
         return {
-            player: 15,        // Jugador más pequeño en móviles pequeños
-            enemy: 12,         // Enemigos más pequeños
-            coin: 10,          // Monedas más pequeñas
-            freeze: 8,         // Power-ups más pequeños
-            playerSpeed: 4,    // Velocidad del jugador
-            enemySpeed: 1.8    // Enemigos más lentos
+            player: 15,
+            enemy: 12,
+            coin: 10,
+            freeze: 8,
+            playerSpeed: 4,
+            enemySpeed: 1.8
         };
     } else if (isMobile) {
         return {
@@ -50,24 +50,22 @@ function getResponsiveSizes() {
             coin: 12,
             freeze: 10,
             playerSpeed: 4.5,
-            enemySpeed: 2
+            enemySpeed: 3
         };
     } else {
         return {
-            player: 25,        // Tamaño original en desktop
+            player: 25,
             enemy: 20,
             coin: 15,
             freeze: 12,
-            playerSpeed: 5,
-            enemySpeed: 2.5
+            playerSpeed: 9,
+            enemySpeed: 9.5
         };
     }
 }
 
-// Variable global para tamaños
 let sizes = getResponsiveSizes();
 
-// Ajustar canvas para dispositivos móviles
 function adjustCanvasSize() {
     const maxWidth = Math.min(800, window.innerWidth - 40);
     
@@ -79,10 +77,8 @@ function adjustCanvasSize() {
         canvas.height = 500;
     }
     
-    // Actualizar tamaños responsive
     sizes = getResponsiveSizes();
     
-    // Actualizar tamaños del jugador si existe
     if (gameState.player) {
         gameState.player.size = sizes.player;
         gameState.player.speed = sizes.playerSpeed;
@@ -90,7 +86,6 @@ function adjustCanvasSize() {
         gameState.player.y = Math.min(gameState.player.y, canvas.height - gameState.player.size);
     }
     
-    // Actualizar tamaños de enemigos
     if (gameState.enemies) {
         gameState.enemies.forEach(enemy => {
             enemy.size = sizes.enemy;
@@ -98,14 +93,12 @@ function adjustCanvasSize() {
         });
     }
     
-    // Actualizar tamaños de monedas
     if (gameState.coins) {
         gameState.coins.forEach(coin => {
             coin.size = sizes.coin;
         });
     }
     
-    // Actualizar tamaños de power-ups
     if (gameState.freezePowerUps) {
         gameState.freezePowerUps.forEach(powerUp => {
             powerUp.size = sizes.freeze;
@@ -113,7 +106,6 @@ function adjustCanvasSize() {
     }
 }
 
-// Sistema de audio
 class AudioManager {
     constructor() {
         this.audioContext = null;
@@ -220,14 +212,22 @@ class AudioManager {
 
 const audioManager = new AudioManager();
 
+// ===============================
+// INTERVALOS CONTROLADOS
+// ===============================
+let enemySpawnInterval = null;
+let greenCoinInterval = null;
+
+
 let gameState = {
     player: { x: 400, y: 250, size: sizes.player, speed: sizes.playerSpeed },
     coins: [],
     enemies: [],
     freezePowerUps: [],
+    killCoins: [],
     score: 0,
-    derechosCount: 0,
-    deberesCount: 0,
+    oroCount: 0,
+    gemasCount: 0,
     keys: {},
     gameOver: false,
     gameWon: false,
@@ -242,7 +242,7 @@ class Coin {
         this.x = Math.random() * (canvas.width - 40) + 20;
         this.y = Math.random() * (canvas.height - 40) + 20;
         this.size = sizes.coin;
-        this.type = Math.random() < 0.5 ? 'derecho' : 'deber';
+        this.type = Math.random() < 0.5 ? 'oro' : 'gema';
         this.collected = false;
         this.pulse = 0;
     }
@@ -262,14 +262,14 @@ class Coin {
         ctx.fill();
         
         const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, pulseSize);
-        if (this.type === 'derecho') {
+        if (this.type === 'oro') {
             gradient.addColorStop(0, '#ffed4e');
             gradient.addColorStop(0.7, '#ffd700');
             gradient.addColorStop(1, '#b8860b');
         } else {
-            gradient.addColorStop(0, '#f0f0f0');
-            gradient.addColorStop(0.7, '#c0c0c0');
-            gradient.addColorStop(1, '#808080');
+            gradient.addColorStop(0, '#ff69b4');
+            gradient.addColorStop(0.7, '#da70d6');
+            gradient.addColorStop(1, '#9370db');
         }
         
         ctx.fillStyle = gradient;
@@ -282,11 +282,11 @@ class Coin {
         ctx.arc(-pulseSize/3, -pulseSize/3, pulseSize/3, 0, Math.PI * 2);
         ctx.fill();
         
-        ctx.fillStyle = this.type === 'derecho' ? '#8b4513' : '#404040';
+        ctx.fillStyle = this.type === 'oro' ? '#8b4513' : '#4b0082';
         const fontSize = Math.max(10, this.size * 1.2);
         ctx.font = `bold ${fontSize}px Arial`;
         ctx.textAlign = 'center';
-        ctx.fillText(this.type === 'derecho' ? '⭐' : '📋', 0, fontSize/3);
+        ctx.fillText(this.type === 'oro' ? '💰' : '💎', 0, fontSize/3);
         
         ctx.restore();
     }
@@ -429,19 +429,61 @@ class FreezePowerUp {
     }
 }
 
+class KillEnemyCoin {
+    constructor() {
+        this.x = Math.random() * (canvas.width - 40) + 20;
+        this.y = Math.random() * (canvas.height - 40) + 20;
+        this.size = sizes.coin;
+        this.collected = false;
+        this.pulse = 0;
+    }
+
+    draw() {
+        if (this.collected) return;
+
+        this.pulse += 0.1;
+        const pulseSize = this.size + Math.sin(this.pulse) * 2;
+
+        ctx.save();
+        ctx.translate(this.x, this.y);
+
+        const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, pulseSize);
+        gradient.addColorStop(0, '#00ff88');
+        gradient.addColorStop(0.7, '#00cc66');
+        gradient.addColorStop(1, '#006633');
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(0, 0, pulseSize, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.font = `bold ${this.size}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.fillText('☠️', 0, this.size / 3);
+
+        ctx.restore();
+    }
+
+    checkCollision(player) {
+        const dx = this.x - player.x;
+        const dy = this.y - player.y;
+        return Math.sqrt(dx * dx + dy * dy) < (this.size + player.size);
+    }
+}
+
+
+
 function drawPlayer() {
     const player = gameState.player;
     
     ctx.save();
     ctx.translate(player.x, player.y);
     
-    // Sombra
     ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
     ctx.beginPath();
     ctx.arc(3, 3, player.size, 0, Math.PI * 2);
     ctx.fill();
     
-    // Cuerpo del jugador
     const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, player.size);
     gradient.addColorStop(0, '#87ceeb');
     gradient.addColorStop(0.7, '#4682b4');
@@ -452,7 +494,6 @@ function drawPlayer() {
     ctx.arc(0, 0, player.size, 0, Math.PI * 2);
     ctx.fill();
     
-    // Cara
     ctx.fillStyle = 'white';
     const fontSize = Math.max(16, player.size * 0.95);
     ctx.font = `bold ${fontSize}px Arial`;
@@ -467,7 +508,6 @@ function spawnCoin() {
 }
 
 function spawnEnemy() {
-    // Asegurar que los enemigos no aparezcan muy cerca del jugador
     let x, y;
     do {
         x = Math.random() * canvas.width;
@@ -477,6 +517,26 @@ function spawnEnemy() {
     gameState.enemies.push(new Enemy(x, y));
 }
 
+function spawnEnemyInCorner() {
+    const corners = [
+        { x: 0, y: 0 },
+        { x: canvas.width, y: 0 },
+        { x: 0, y: canvas.height },
+        { x: canvas.width, y: canvas.height }
+    ];
+
+    const corner = corners[Math.floor(Math.random() * corners.length)];
+
+    gameState.enemies.push(
+        new Enemy(
+            corner.x === 0 ? sizes.enemy : corner.x - sizes.enemy,
+            corner.y === 0 ? sizes.enemy : corner.y - sizes.enemy
+        )
+    );
+}
+
+
+
 function spawnFreezePowerUp() {
     gameState.freezePowerUps.push(new FreezePowerUp());
 }
@@ -484,9 +544,8 @@ function spawnFreezePowerUp() {
 function updateGame() {
     if (gameState.gameOver || gameState.gameWon || gameState.gamePaused || !gameState.gameStarted) return;
     
-    // Actualizar timer de congelamiento
     if (gameState.enemiesFrozen) {
-        gameState.freezeTimeLeft -= 1/60; // Asumiendo 60 FPS
+        gameState.freezeTimeLeft -= 1/60;
         if (gameState.freezeTimeLeft <= 0) {
             gameState.enemiesFrozen = false;
             document.getElementById('freezeIndicator').style.display = 'none';
@@ -495,7 +554,6 @@ function updateGame() {
         }
     }
     
-    // Movimiento del jugador
     const player = gameState.player;
     
     if (gameState.keys['ArrowUp'] || gameState.keys['w'] || gameState.keys['W']) {
@@ -511,7 +569,6 @@ function updateGame() {
         player.x = Math.min(canvas.width - player.size, player.x + player.speed);
     }
 
-    // Actualizar enemigos
     gameState.enemies.forEach(enemy => {
         enemy.update();
         if (enemy.checkCollision(player)) {
@@ -521,46 +578,52 @@ function updateGame() {
         }
     });
 
-    // Colisiones con monedas
     gameState.coins.forEach(coin => {
         if (coin.checkCollision(player)) {
             coin.collected = true;
             gameState.score += 10;
             audioManager.playCoinSound();
             
-            if (coin.type === 'derecho') {
-                gameState.derechosCount++;
-                showMessage('derecho', derechos[Math.floor(Math.random() * derechos.length)]);
+            if (coin.type === 'oro') {
+                gameState.oroCount++;
+                showMessage('oro', tesorosOro[Math.floor(Math.random() * tesorosOro.length)]);
             } else {
-                gameState.deberesCount++;
-                showMessage('deber', deberes[Math.floor(Math.random() * deberes.length)]);
+                gameState.gemasCount++;
+                showMessage('gema', tesorosGemas[Math.floor(Math.random() * tesorosGemas.length)]);
             }
             
-            // Verificar victoria
-            if (gameState.derechosCount + gameState.deberesCount >= 20) {
+            if (gameState.oroCount + gameState.gemasCount >= 20) {
                 gameState.gameWon = true;
                 showGameWon();
             }
         }
     });
 
-    // Colisiones con power-ups de congelamiento
     gameState.freezePowerUps.forEach(powerUp => {
+        gameState.killCoins.forEach(coin => {
+            if (coin.checkCollision(player)) {
+                coin.collected = true;
+
+                if (gameState.enemies.length > 0) {
+                    gameState.enemies.shift();
+                    showMessage('powerup', '☠️ ¡Un enemigo ha sido eliminado!');
+                }
+            }
+        });
         if (powerUp.checkCollision(player)) {
             powerUp.collected = true;
             gameState.enemiesFrozen = true;
             gameState.freezeTimeLeft = 5;
             document.getElementById('freezeIndicator').style.display = 'block';
             audioManager.playFreezeSound();
-            showMessage('powerup', '❄️ ¡Enemigos congelados por 5 segundos!');
+            showMessage('powerup', '❄️ ¡Guardianes congelados por 5 segundos!');
         }
     });
 
-    // Remover elementos recolectados
+    gameState.killCoins = gameState.killCoins.filter(c => !c.collected);
     gameState.coins = gameState.coins.filter(coin => !coin.collected);
     gameState.freezePowerUps = gameState.freezePowerUps.filter(powerUp => !powerUp.collected);
 
-    // Generar nuevos elementos
     if (Math.random() < 0.02 && gameState.coins.length < 6) {
         spawnCoin();
     }
@@ -573,11 +636,9 @@ function updateGame() {
 }
 
 function render() {
-    // Limpiar canvas
     ctx.fillStyle = 'rgba(30, 60, 90, 0.8)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Dibujar patrón de fondo
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
     ctx.lineWidth = 1;
     for (let i = 0; i < canvas.width; i += 50) {
@@ -593,15 +654,14 @@ function render() {
         ctx.stroke();
     }
 
-    // Solo dibujar elementos del juego si ha comenzado
     if (gameState.gameStarted) {
         gameState.coins.forEach(coin => coin.draw());
         gameState.freezePowerUps.forEach(powerUp => powerUp.draw());
+        gameState.killCoins.forEach(coin => coin.draw());
         gameState.enemies.forEach(enemy => enemy.draw());
         drawPlayer();
     }
     
-    // Mostrar mensaje de pausa si está pausado
     if (gameState.gamePaused && gameState.gameStarted) {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -626,22 +686,22 @@ function gameLoop() {
 
 function updateUI() {
     document.getElementById('score').textContent = gameState.score;
-    document.getElementById('derechos').textContent = gameState.derechosCount;
-    document.getElementById('deberes').textContent = gameState.deberesCount;
+    document.getElementById('derechos').textContent = gameState.oroCount;
+    document.getElementById('deberes').textContent = gameState.gemasCount;
 }
 
 function showMessage(type, content) {
     const panel = document.getElementById('messagePanel');
     let title, className;
     
-    if (type === 'derecho') {
-        title = '⭐ DERECHO DEL USUARIO';
+    if (type === 'oro') {
+        title = '💰 ¡MONEDA DE ORO!';
         className = 'message-panel derecho';
-    } else if (type === 'deber') {
-        title = '📋 DEBER DEL USUARIO';
+    } else if (type === 'gema') {
+        title = '💎 ¡GEMA PRECIOSA!';
         className = 'message-panel deber';
     } else if (type === 'powerup') {
-        title = '❄️ POWER-UP ACTIVADO';
+        title = '❄️ PODER ACTIVADO';
         className = 'message-panel';
     }
     
@@ -657,28 +717,24 @@ function closeStartPanel() {
     if (panel) panel.style.display = "none";
 }
 
-
 function closeModal(button) {
     const modal = button.closest('.game-over-panel, .start-panel');
     if (modal) modal.remove();
 }
 
-
 function showGameOver() {
-
     const mobileControls = document.getElementById("mobileControls");
     if (mobileControls) mobileControls.style.display = "none";
-
 
     const gameOverDiv = document.createElement('div');
     gameOverDiv.className = 'game-over-panel';
     gameOverDiv.innerHTML = `
-        <div class="game-over-title">💀 ¡PERDISTE!</div>
+        <div class="game-over-title">💀 ¡CAPTURADO!</div>
         <button class="close-modal" onclick="closeModal(this)">✕</button>
-        <div class="game-over-message">Los enemigos te atraparon. ¡Inténtalo de nuevo!</div>
+        <div class="game-over-message">Los guardianes del tesoro te atraparon. ¡Inténtalo de nuevo!</div>
         <div class="game-over-message">Puntuación final: ${gameState.score} puntos</div>
-        <div class="game-over-message">Derechos: ${gameState.derechosCount} | Deberes: ${gameState.deberesCount}</div>
-        <button class="start-btn" onclick="restartGame(); this.parentElement.remove();">🔄 Reiniciar Juego</button>
+        <div class="game-over-message">Oro: ${gameState.oroCount} | Gemas: ${gameState.gemasCount}</div>
+        <button class="start-btn" onclick="restartGame(); this.parentElement.remove();">🔄 Reiniciar Aventura</button>
     `;
     document.body.appendChild(gameOverDiv);
 }
@@ -688,41 +744,34 @@ function showGameWon() {
 
     const mobileControls = document.getElementById("mobileControls");
     if (mobileControls) mobileControls.style.display = "none";
-
     
     const gameWonDiv = document.createElement('div');
     gameWonDiv.className = 'game-over-panel';
     gameWonDiv.innerHTML = `
-        <div class="game-over-title">🏆 ¡GANASTE!</div>
+        <div class="game-over-title">🏆 ¡VICTORIA!</div>
         <button class="close-modal" onclick="closeModal(this)">✕</button>
-        <div class="game-over-message">¡Felicidades! Has capturado 20 monedas y completado el juego.</div>
+        <div class="game-over-message">¡Felicidades! Has recolectado 20 tesoros y completado la aventura.</div>
         <div class="game-over-message">Puntuación final: ${gameState.score} puntos</div>
-        <div class="game-over-message">Derechos: ${gameState.derechosCount} | Deberes: ${gameState.deberesCount}</div>
-        <button class="start-btn" onclick="restartGame(); this.parentElement.remove();">🔄 Jugar de nuevo</button>
+        <div class="game-over-message">Oro: ${gameState.oroCount} | Gemas: ${gameState.gemasCount}</div>
+        <button class="start-btn" onclick="restartGame(); this.parentElement.remove();">🔄 Nueva Aventura</button>
     `;
     document.body.appendChild(gameWonDiv);
 }
 
 function startGame() {
-
     gameState.gameStarted = true;
     gameState.gamePaused = false;
     
-    // Ocultar panel de inicio
     document.getElementById('startPanel').style.display = 'none';
-    
-    // Cambiar el texto del botón de pausa
     document.getElementById('pauseBtn').textContent = '⏸️ Pausar';
     
-    // Mostrar mensaje de juego iniciado
     const panel = document.getElementById('messagePanel');
     panel.className = 'message-panel';
     panel.innerHTML = `
-        <button class="close-modal" onclick="closeGameOverPanel()">✕</button>
-        <div class="message-title">¡Juego Iniciado!</div>
+        <div class="message-title">¡Aventura Iniciada!</div>
         <div class="message-content">
-            ¡El juego ha comenzado! Usa las teclas de flecha o WASD para moverte. Captura 20 monedas para ganar,
-            pero cuidado con los enemigos. ¡Buena suerte!
+            ¡La búsqueda del tesoro ha comenzado! Usa las teclas de flecha o WASD para moverte. Recolecta 20 tesoros para ganar,
+            pero cuidado con los guardianes. ¡Buena suerte, aventurero!
         </div>
     `;
 
@@ -731,84 +780,71 @@ function startGame() {
         mobileControls.style.display = "block";
     }
 
-
+    startEnemySpawner();
+    startGreenCoinSpawner();
 }
+
 
 function togglePause() {
+    if (!gameState.gameStarted || gameState.gameOver) return;
+
+    gameState.gamePaused = !gameState.gamePaused;
+
+    const pauseBtn = document.getElementById('pauseBtn');
     const mobileControls = document.getElementById("mobileControls");
 
-    if (mobileControls) {
-        mobileControls.style.display = gameState.gamePaused ? "none" : "block";
-    }
-
-
-    if (!gameState.gameStarted) return;
-    
-    gameState.gamePaused = !gameState.gamePaused;
-    const pauseBtn = document.getElementById('pauseBtn');
-    
     if (gameState.gamePaused) {
         pauseBtn.textContent = '▶️ Reanudar';
+        if (mobileControls) mobileControls.style.display = "none";
     } else {
         pauseBtn.textContent = '⏸️ Pausar';
+        if (mobileControls && window.innerWidth <= 768) {
+            mobileControls.style.display = "block";
+        }
     }
 }
+
 
 function restartGame() {
-    // Remover paneles existentes
-    document.querySelectorAll('.game-over-panel').forEach(panel => panel.remove());
-    
-    gameState = {
-        player: { 
-            x: Math.min(400, canvas.width/2), 
-            y: Math.min(250, canvas.height/2), 
-            size: sizes.player, 
-            speed: sizes.playerSpeed 
-        },
-        coins: [],
-        enemies: [],
-        freezePowerUps: [],
-        score: 0,
-        derechosCount: 0,
-        deberesCount: 0,
-        keys: {},
-        gameOver: false,
-        gameWon: false,
-        enemiesFrozen: false,
-        freezeTimeLeft: 0,
-        gameStarted: true,
-        gamePaused: false
+    clearInterval(enemySpawnInterval);
+    clearInterval(greenCoinInterval);
+    enemySpawnInterval = null;
+    greenCoinInterval = null;
+
+    document.querySelectorAll('.game-over-panel').forEach(p => p.remove());
+
+    gameState.gameOver = false;
+    gameState.gameWon = false;
+    gameState.gamePaused = false;
+    gameState.gameStarted = true;
+
+    gameState.score = 0;
+    gameState.oroCount = 0;
+    gameState.gemasCount = 0;
+    gameState.keys = {};
+
+    gameState.coins = [];
+    gameState.enemies = [];
+    gameState.freezePowerUps = [];
+    gameState.killCoins = [];
+
+    gameState.player = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        size: sizes.player,
+        speed: sizes.playerSpeed
     };
-    
-    // Ocultar indicador de congelamiento
-    document.getElementById('freezeIndicator').style.display = 'none';
-    
-    // Generar elementos iniciales
-    for (let i = 0; i < 4; i++) {
-        spawnCoin();
-    }
-    
-    // Generar enemigos
+
+    for (let i = 0; i < 4; i++) spawnCoin();
     spawnEnemy();
     spawnEnemy();
-    
-    // Cambiar botón de pausa
-    document.getElementById('pauseBtn').textContent = '⏸️ Pausar';
-    
-    const panel = document.getElementById('messagePanel');
-    panel.className = 'message-panel';
-    panel.innerHTML = `
-        <div class="message-title">¡Juego Reiniciado!</div>
-        <div class="message-content">
-            Captura 20 monedas para ganar, pero cuidado con los enemigos rojos. Las bolitas azules ❄️ congelan a los enemigos por 5 segundos. ¡Buena suerte!
-        </div>
-    `;
-    
+
     updateUI();
 
-    const mobileControls = document.getElementById("mobileControls");
-    if (mobileControls) mobileControls.style.display = "block";
+    startEnemySpawner();
+    startGreenCoinSpawner();
 }
+
 
 // Inicializar juego 
 function initializeGame() {
@@ -957,16 +993,33 @@ joystickBase.addEventListener("touchend", () => {
 
 
 // Inicializar inmediatamente si el DOM ya está cargado
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        adjustCanvasSize();
-        setupMobileControls();
-        initializeGame();
-        gameLoop();
-    });
-} else {
+window.addEventListener('load', () => {
     adjustCanvasSize();
     setupMobileControls();
     initializeGame();
     gameLoop();
+});
+
+
+
+// FUNCIONES EXPERIMENTALES
+
+function startEnemySpawner() {
+    if (enemySpawnInterval) return;
+
+    enemySpawnInterval = setInterval(() => {
+        if (gameState.gameOver || gameState.gamePaused) return;
+        spawnEnemyInCorner();
+    }, 7000);
+}
+
+function startGreenCoinSpawner() {
+    if (greenCoinInterval) return;
+
+    greenCoinInterval = setInterval(() => {
+        if (gameState.gameOver || gameState.gamePaused) return;
+        if (gameState.killCoins.length < 1) {
+            gameState.killCoins.push(new KillEnemyCoin());
+        }
+    }, 10000);
 }
