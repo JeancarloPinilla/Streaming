@@ -916,6 +916,14 @@ joystickBase.addEventListener("touchmove", (e) => {
     setDirection(x, y);
 });
 
+gameState.keys = {
+    up: false,
+    down: false,
+    left: false,
+    right: false
+};
+
+
 joystickBase.addEventListener("touchend", () => {
     joystickActive = false;
     joystickStick.style.transform = "translate(-50%, -50%)";
