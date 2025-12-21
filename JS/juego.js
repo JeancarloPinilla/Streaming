@@ -58,8 +58,8 @@ function getResponsiveSizes() {
             enemy: 20,
             coin: 15,
             freeze: 12,
-            playerSpeed: 9,
-            enemySpeed: 8.7
+            playerSpeed: 6,
+            enemySpeed: 5
         };
     }
 }
