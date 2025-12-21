@@ -884,11 +884,12 @@ let joystickCenter = { x: 0, y: 0 };
 const maxDistance = 50;
 
 function setDirection(dx, dy) {
-    gameState.keys.up = dy < -10;
-    gameState.keys.down = dy > 10;
-    gameState.keys.left = dx < -10;
-    gameState.keys.right = dx > 10;
+    gameState.keys['ArrowUp'] = dy < -10;
+    gameState.keys['ArrowDown'] = dy > 10;
+    gameState.keys['ArrowLeft'] = dx < -10;
+    gameState.keys['ArrowRight'] = dx > 10;
 }
+
 
 joystickBase.addEventListener("touchstart", (e) => {
     joystickActive = true;
@@ -915,13 +916,6 @@ joystickBase.addEventListener("touchmove", (e) => {
 
     setDirection(x, y);
 });
-
-gameState.keys = {
-    up: false,
-    down: false,
-    left: false,
-    right: false
-};
 
 
 joystickBase.addEventListener("touchend", () => {
