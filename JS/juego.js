@@ -875,6 +875,58 @@ window.addEventListener('resize', () => {
     adjustCanvasSize();
 });
 
+
+const joystickBase = document.getElementById("joystickBase");
+const joystickStick = document.getElementById("joystickStick");
+
+let joystickActive = false;
+let joystickCenter = { x: 0, y: 0 };
+const maxDistance = 50;
+
+function setDirection(dx, dy) {
+    gameState.keys.up = dy < -10;
+    gameState.keys.down = dy > 10;
+    gameState.keys.left = dx < -10;
+    gameState.keys.right = dx > 10;
+}
+
+joystickBase.addEventListener("touchstart", (e) => {
+    joystickActive = true;
+    const rect = joystickBase.getBoundingClientRect();
+    joystickCenter.x = rect.left + rect.width / 2;
+    joystickCenter.y = rect.top + rect.height / 2;
+});
+
+joystickBase.addEventListener("touchmove", (e) => {
+    if (!joystickActive) return;
+
+    const touch = e.touches[0];
+    let dx = touch.clientX - joystickCenter.x;
+    let dy = touch.clientY - joystickCenter.y;
+
+    const distance = Math.min(Math.sqrt(dx*dx + dy*dy), maxDistance);
+    const angle = Math.atan2(dy, dx);
+
+    const x = Math.cos(angle) * distance;
+    const y = Math.sin(angle) * distance;
+
+    joystickStick.style.transform =
+        `translate(${x - 30}px, ${y - 30}px)`;
+
+    setDirection(x, y);
+});
+
+joystickBase.addEventListener("touchend", () => {
+    joystickActive = false;
+    joystickStick.style.transform = "translate(-50%, -50%)";
+
+    gameState.keys.up = false;
+    gameState.keys.down = false;
+    gameState.keys.left = false;
+    gameState.keys.right = false;
+});
+
+
 // Inicializar inmediatamente si el DOM ya está cargado
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {

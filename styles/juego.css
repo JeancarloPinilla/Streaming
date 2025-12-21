@@ -295,35 +295,28 @@ body {
     z-index: 1000;
 }
 
-.mobile-dpad {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 6px;
-    width: 150px;
-    height: 150px;
-}
-
-.mobile-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255,255,255,0.1);
+.joystick-base {
+    width: 140px;
+    height: 140px;
+    background: rgba(255,255,255,0.08);
     border: 2px solid var(--border-soft);
-    border-radius: 10px;
-    color: white;
-    font-size: 20px;
-    font-weight: bold;
+    border-radius: 50%;
+    position: relative;
+    touch-action: none;
 }
 
-.mobile-btn:active {
-    background: var(--accent-soft);
+.joystick-stick {
+    width: 60px;
+    height: 60px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 }
 
-.mobile-btn.up { grid-column: 2; grid-row: 1; }
-.mobile-btn.left { grid-column: 1; grid-row: 2; }
-.mobile-btn.right { grid-column: 3; grid-row: 2; }
-.mobile-btn.down { grid-column: 2; grid-row: 3; }
 
 /* ====================================================== */
 /* RESPONSIVE                                             */
