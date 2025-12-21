@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captura de Monedas - Derechos y Deberes</title>
+    <link rel="stylesheet" href="../styles/juego.css">
+</head>
+<body>
+    <a href="../main.html" class="back-button">← Regresar al panel</a>
+    <div class="game-container">
+        <div class="game-header">
+            <h1>🏥 Captura de Monedas</h1>
+            <p>Derechos y Deberes del Usuario</p>
+        </div>
+        
+        <div class="score-board">
+            <div class="score-item">
+                <div>⭐ Puntuación</div>
+                <div id="score">0</div>
+            </div>
+            <div class="score-item">
+                <div>🏆 Derechos</div>
+                <div id="derechos">0</div>
+            </div>
+            <div class="score-item">
+                <div>📋 Deberes</div>
+                <div id="deberes">0</div>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas" class="game-canvas" width="800" height="500"></canvas>
+        
+        <div class="freeze-indicator" id="freezeIndicator" style="display: none;">
+            ❄️ Enemigos congelados: <span id="freezeTimer">0</span>s
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <span class="coin-icon gold"></span>
+                <span>Monedas Doradas = Derechos</span>
+            </div>
+            <div class="legend-item">
+                <span class="coin-icon silver"></span>
+                <span>Monedas Plateadas = Deberes</span>
+            </div>
+            <div class="legend-item">
+                <span class="coin-icon" style="background: linear-gradient(45deg, #00bfff, #87ceeb);"></span>
+                <span>Bolitas Azules = Congelar</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <p>🎮 Usa las teclas de flecha o WASD para moverte | 🏆 ¡Captura 20 monedas para ganar!</p>
+            <p>⚠️ Evita a los enemigos rojos | ❄️ Las bolitas azules congelan enemigos</p>
+            <button class="restart-btn" onclick="restartGame()">🔄 Reiniciar</button>
+            <button class="pause-btn" id="pauseBtn" onclick="togglePause()">▶️ Iniciar</button>
+        </div>
+    </div>
+
+    <!-- Controles móviles -->
+    <div class="mobile-controls" id="mobileControls">
+        <div class="mobile-dpad">
+            <div class="mobile-btn up" data-key="ArrowUp">↑</div>
+            <div class="mobile-btn left" data-key="ArrowLeft">←</div>
+            <div class="mobile-btn right" data-key="ArrowRight">→</div>
+            <div class="mobile-btn down" data-key="ArrowDown">↓</div>
+        </div>
+    </div>
+
+    <div class="message-panel" id="messagePanel">
+        <div class="message-title">¡Bienvenido al Juego!</div>
+        <div class="message-content">
+            Muévete por el campo y agarra las monedas. Las monedas doradas te enseñarán sobre tus <strong>derechos</strong> 
+            como usuario del sistema de salud, mientras que las plateadas te mostrarán tus <strong>deberes</strong>.
+            Aprende mientras juegas, pero sobre todo, disfruta.
+        </div>
+    </div>
+
+    <!-- Panel de inicio -->
+    <div class="start-panel" id="startPanel">
+        <button class="close-modal" onclick="closeStartPanel()">✕</button>
+
+        <div class="start-title">🏥 Captura de Monedas</div>
+        <div class="start-message">
+            ¡Aprende sobre tus derechos y deberes como usuario del sistema de salud!<br><br>
+            <strong>Objetivo:</strong> Captura 20 monedas evitando a los enemigos.<br>
+            <strong>🏆 Monedas doradas:</strong> Derechos del usuario<br>
+            <strong>📋 Monedas plateadas:</strong> Deberes del usuario<br>
+            <strong>❄️ Bolitas azules:</strong> Congelan enemigos por 5 segundos
+        </div>
+
+        <button class="start-btn" onclick="startGame()">🎮 Comenzar Juego</button>
+    </div>
+    <script src="../JS/juego.js"></script>
+</body>
+</html>
