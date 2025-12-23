@@ -818,6 +818,9 @@ function restartGame() {
     gameState.gamePaused = false;
     gameState.gameStarted = true;
 
+    const mobileControls = document.getElementById("mobileControls");
+    if (mobileControls) mobileControls.style.display = "block";
+
     gameState.score = 0;
     gameState.oroCount = 0;
     gameState.gemasCount = 0;
